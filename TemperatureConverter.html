@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pre-Assignment: JavaScript code</title>
+    <!-- googlefont -->
+    <link
+      href="https://fonts.googleapis.com/css?family=Roboto Slab"
+      rel="stylesheet"
+    />
+    <!-- Style -->
+    <style>
+      /* universal box-sizing,
+      * reset margin and padding */
+      *,
+      *::before,
+      *::after {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      /* base body styling */
+      body {
+        width: 100vw;
+        height: 100vh;
+        background-color: whitesmoke;
+        text-align: center;
+        font-family: "Roboto Slab", serif;
+        color: black;
+        overflow: hidden;
+      }
+
+      /* base alignment of content */
+      .flex-c-c,
+      .radio-group {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .flex-c-c {
+        flex-direction: column;
+      }
+
+      /* radio-button spacing
+       * and customized styling */
+      .radio-group {
+        margin-top: 1rem;
+      }
+      input[type="radio"] {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        cursor: pointer;
+        display: inline-block;
+        width: 25px;
+        height: 25px;
+        padding: 6px;
+        background-clip: content-box;
+        border: 2px solid #e6e6e6;
+        border-radius: 50%;
+      }
+      input[type="radio"]:checked {
+        background-color: black;
+      }
+
+      /* input label */
+      label {
+        margin: 0 0.5rem;
+        font-size: 12px;
+      }
+
+      /* base primary-button styling */
+      .btn {
+        cursor: pointer;
+        background-color: black;
+        border: none;
+        border-radius: 0.3125rem;
+        color: white;
+        padding: 0.9375rem 3.125rem;
+        text-align: center;
+        text-transform: uppercase;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 1rem;
+        margin: 0.625rem 2.5rem 0.625rem 2.5rem;
+      }
+
+      /* base secondary-button styling */
+      .btn-reset {
+        border: 0.125rem solid black;
+        background-color: none !important;
+        border-radius: 0.3125rem;
+        color: black;
+        background-color: whitesmoke;
+      }
+
+      /* header and result header */
+      h1,
+      h2 {
+        margin: 2.5rem 0;
+      }
+
+      /* convertionContent */
+      .convertionContent {
+        visibility: hidden;
+        margin: 3rem 0;
+      }
+
+      /* input field*/
+      #input[type="number"] {
+        width: 40%;
+        height: 10%;
+        font-size: 0.75rem;
+        border: none;
+        border-bottom: 0.125rem solid black;
+        background-color: whitesmoke;
+        padding: 0.9375rem 3.125rem;
+        margin-bottom: 3rem;
+        transition: width 0.5s ease-in-out;
+      }
+      #input[type="number"]:focus {
+        width: 70%;
+        outline: none;
+        border-radius: 0.3125rem;
+        background-color: #f0f0f0;
+      }
+
+      /* removing default arrows inside input */
+      #input::-webkit-outer-spin-button,
+      #input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        margin: 0;
+      }
+    </style>
+  </head>
+  <!-- Main html -->
+  <body>
+    <h1>Temperature Converter</h1>
+    <div class="flex-c-c">
+      <p id="methodLable">Choose the convertion method</p>
+      <div class="radio-group">
+        <input
+          type="radio"
+          name="typeradio"
+          value="f"
+          onchange="changeOperation()"
+        />
+        <label>C To F</label> <br />
+        <input
+          type="radio"
+          name="typeradio"
+          value="c"
+          onchange="changeOperation()"
+        />
+        <label>F To C</label>
+      </div>
+    </div>
+    <div class="convertionContent flex-c-c">
+      <input id="input" type="number" placeholder="Temperature here.." />
+      <button class="btn btn-convert" onclick="displayResult()">convert</button>
+      <button class="btn btn-reset" onclick="handelReset()">reset</button>
+      <h2 id="results"></h2>
+    </div>
+    <!-- JS   -->
+    <script>
+      const radios = document.querySelectorAll("[name=typeradio]");
+      const convertionContent = document.querySelector(".convertionContent");
+      const methodLable = document.querySelector("#methodLable");
+      const input = document.querySelector("#input");
+      const results = document.querySelector("#results");
+      var targetTypeValue = "";
+
+      /**
+       * returns the operation type from "radio" inputs value,
+       * stored in a global variable,
+       * and clears input and results if another operation is selected
+       */
+      function handelOperation() {
+        for (let i = 0; i < radios.length; i++) {
+          if (radios[i].checked) {
+            targetTypeValue = radios[i].value;
+            input.value = "";
+            results.innerHTML = "";
+          }
+        }
+        return targetTypeValue;
+      }
+
+      /**
+       * reveals the convertion content,
+       * replaces the text corespondingly to the selected method,
+       * clears result if another operation is selected
+       */
+      function changeOperation() {
+        targetTypeValue = handelOperation();
+        convertionContent.style.visibility = "visible";
+        if (targetTypeValue === "f") {
+          methodLable.innerHTML = "Enter celsius temperature";
+        } else {
+          methodLable.innerHTML = "Enter fahrenheit temperature";
+        }
+        if (input.value.trim() === "") {
+          results.innerHTML = "";
+        }
+      }
+
+      /**
+       * converts the temprature from celsius to fahrenheit.
+       * using the Formula given in the assignment's description.
+       *
+       * @param  {celsius} celsius temprature.
+       */
+      function cToF(celsius) {
+        return (parseFloat(celsius) * 1.8 + 32).toFixed(2);
+      }
+
+      /**
+       * converts the temprature from fahrenheit to celsius,
+       * using the Formula given in the assignment's description.
+       *
+       * @param  {fahrenheit} fahrenheit temprature.
+       */
+      function fToC(fahrenheit) {
+        return (parseFloat(fahrenheit - 32) / 1.8).toFixed(2);
+      }
+
+      /**
+       * sets different colors for results,
+       * according to the assignment's description.
+       *
+       * @param  {celsius} celsius temprature.
+       */
+      function setResultColor(celsius) {
+        if (celsius < 4) {
+          return "blue";
+        } else if (celsius > 27) {
+          return "red";
+        }
+        return "black";
+      }
+
+      /**
+       * does not display the result if input if empty
+       * displays result with the right colors,
+       * using the setResultColor method.
+       */
+      function displayResult() {
+        let res = 0;
+        let msg = "";
+        if (input.value.trim() === "") {
+          return;
+        }
+        if (targetTypeValue === "f") {
+          results.style.color = setResultColor(input.value);
+          res = cToF(input.value);
+          msg = `${input.value}\xB0 C &nbsp is &nbsp ${res}\xB0 F.`;
+        } else {
+          res = fToC(input.value);
+          results.style.color = setResultColor(res);
+          msg = `${input.value}\xB0 F &nbsp is &nbsp ${res}\xB0 C.`;
+        }
+        results.innerHTML = msg;
+      }
+
+      /**
+       * resets opertations,
+       * clears the values (input, result, and radio selection),
+       * and hides the convertion content.
+       */
+      function handelReset() {
+        input.value = "";
+        results.innerHTML = "";
+        convertionContent.style.visibility = "hidden";
+        methodLable.innerHTML = "Choose the convertion method";
+        for (let i = 0; i < radios.length; i++) {
+          radios[i].checked = false;
+        }
+      }
+    </script>
+  </body>
+</html>
